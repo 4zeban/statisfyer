@@ -1,8 +1,6 @@
 Attribute VB_Name = "tagView"
 'namespace=vba-files\Views
 
-'namespace=vba-files\Views
-
 Public Function TagRef() As Variant
   Application.Volatile
   On Error GoTo ErrorHandler
@@ -68,12 +66,6 @@ Public Function BuildRef() As String
   End If
 
 End Function
-
-Sub ba()
-    Dim o As Variant
-    o = GetDefinedNames("TBL_")
-    Debug.Print o
-End Sub
 
 Function GetPrefixes() As Variant
   Dim names As Variant
