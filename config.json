@@ -1,0 +1,14 @@
+{
+    "app_name": "statisfyer",
+    "description": "",
+    "author": "4zeban",
+    "email": "",
+    "create_date": "Tue Mar 07 2023 18:42:06 GMT+0100 (Central European Standard Time)",
+    "excel_file": "index.xlsb",
+    "vba_folder": "vba-files",
+    "ribbon_file": "customUI14",
+    "ribbon_folder": "ribbons",
+    "logs": "on",
+    "xvba_packages": {},
+    "xvba_dev_packages": {}
+}
