@@ -10,19 +10,19 @@ ErrorHandler:
     TagRef = "-"
 End Function
 
-Public Function BuildRow(ByVal pref As String, Optional ByVal key As String = "") As Variant
+Public Function BuildRow(ByVal table As String, ByVal pref As String, Optional year As Long = 1995, Optional ByVal key As String = "") As Variant
     Dim row As Variant
     Dim yearValues() As Variant
     
     ReDim yearValues(0 To 35)
     
     On Error Resume Next ' ignore errors if name doesn't exist
-        
+       
     For i = 0 To 35
       If (key = "") Then
-            yearValues(i) = range("T420_" & pref & "_" & 1995 + i & "_Summa")
+            yearValues(i) = range("T" & table & "_" & pref & "_" & year + i & "_Summa")
         Else
-            yearValues(i) = range("T420_" & pref & "_" & 1995 + i & "_" & key)
+            yearValues(i) = range("T" & table & "_" & pref & "_" & year + i & "_" & key)
         End If
     Next i
     On Error GoTo 0 ' stop ignoring errors
@@ -67,9 +67,9 @@ Public Function BuildRef() As String
 
 End Function
 
-Function GetPrefixes() As Variant
+Function GetPrefixes(ByVal table As String) As Variant
   Dim names As Variant
-  names = GetT420Names()
+  names = GetTNames(table)
   
   Dim nameList As Object
   Set nameList = CreateObject("Scripting.Dictionary")
@@ -81,10 +81,10 @@ Function GetPrefixes() As Variant
   GetPrefixes = nameList.Keys()
 End Function
 
-Function GetTagsForPrefix(ByVal rng As range, Optional excludeHeaders As Boolean = False) As Variant
+Function GetTagsForPrefix(ByVal rng As range, ByVal table As String, Optional excludeHeaders As Boolean = False) As Variant
 
   Dim names As Variant
-  names = GetT420Names()
+  names = GetTNames(table)
   
   Dim nameList As Object
   Set nameList = CreateObject("Scripting.Dictionary")
@@ -111,7 +111,7 @@ Function GetTagsForPrefix(ByVal rng As range, Optional excludeHeaders As Boolean
         If index = 0 Then
             filterList(tagList(i)) = 1
         Else
-            If range("_mappings!E28:AC28").Find(What:=Mid(tagList(i), index + 1), LookIn:=xlValues, LookAt:=xlWhole) Is Nothing Then
+            If range("_mappings_" & table & "!E28:AC28").Find(What:=Mid(tagList(i), index + 1), LookIn:=xlValues, LookAt:=xlWhole) Is Nothing Then
                 filterList(Left(tagList(i), index - 1)) = 1
             End If
         End If
@@ -137,7 +137,7 @@ Function GetTextAfterUnderscore(ByVal myString As String) As String
 End Function
 
 
-Private Function GetT420Names(Optional ByVal stripYear As Boolean = True) As Variant
+Private Function GetTNames(ByVal table As String, Optional ByVal stripYear As Boolean = True) As Variant
  Dim wb As Workbook
     Dim ws As Worksheet
     Dim nm As name
@@ -147,14 +147,14 @@ Private Function GetT420Names(Optional ByVal stripYear As Boolean = True) As Var
     
     Set wb = ThisWorkbook
     For Each nm In wb.names
-        If Left(nm.name, 5) = "T420_" Then
+        If Left(nm.name, 4) = "T" & table Then
             Dim s As String
-            s = Join(RemoveNthValueFromArray(Split(Replace(nm.name, "T420_", ""), "_"), 1), "_")
+            s = Join(RemoveNthValueFromArray(Split(Replace(nm.name, "T" & table & "_", ""), "_"), 1), "_")
             nameList(s) = 1
         End If
     Next nm
     
-    GetT420Names = nameList.Keys()
+    GetTNames = nameList.Keys()
 End Function
 
 Function RemoveNthValueFromArray(myArray As Variant, n As Long) As Variant

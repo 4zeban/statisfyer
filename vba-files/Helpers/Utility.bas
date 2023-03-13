@@ -1,16 +1,16 @@
 Attribute VB_Name = "Utility"
 'namespace=vba-files\Helpers
 
-Sub SearchInAllSheets(ByVal searchValue As Variant)   
+Sub SearchInAllSheets(ByVal searchValue As Variant)
     Dim ws As Worksheet
     For Each ws In ThisWorkbook.Worksheets
         
         On Error Resume Next
         Dim foundCell As range
         Set foundCell = ws.Columns(1).Cells.Find(What:=searchValue, LookIn:=xlValues, LookAt:=xlWhole)
-        If Not foundCell Is Nothing And GetName(foundCell.offset(0,1)) = "" Then
+        If Not foundCell Is Nothing And GetName(foundCell.offset(0, 1)) = "" Then
             ws.Activate
-            foundCell.offset(0,1).Select
+            foundCell.offset(0, 1).Select
             On Error GoTo 0
             Exit For
         End If
@@ -42,7 +42,7 @@ Function GetKeyValues(ByVal key As String, Optional rowNumber As Long = 1) As Va
     Dim Values As Variant
     Values = Array("", "", "", "", "")
 
-    Set keyCell = ws.Rows(rowNumber).Find(key, LookIn:=xlValues, LookAt:=xlWhole)
+    Set keyCell = ws.rows(rowNumber).Find(key, LookIn:=xlValues, LookAt:=xlWhole)
 
     For i = LBound(Values) To UBound(Values)
         If Not keyCell Is Nothing Then
@@ -56,13 +56,13 @@ End Function
 Sub SetKeyValues(ByVal key As String, ByVal Values As Variant, Optional rowNumber As Long = 1)
     Dim ws As Worksheet
     Set ws = ThisWorkbook.Sheets("_key-values")
-    Dim keyCell As Range
+    Dim keyCell As range
 
-    Set keyCell = ws.Rows(rowNumber).Find(key, LookIn:=xlValues, LookAt:=xlWhole)
+    Set keyCell = ws.rows(rowNumber).Find(key, LookIn:=xlValues, LookAt:=xlWhole)
     If keyCell Is Nothing Then
         For i = 1 To 500
-            If ws.Rows(rowNumber).Cells(1).offset(0, i).Value = "" Then
-                Set keyCell = ws.Rows(rowNumber).Cells(1).offset(0, i)
+            If ws.rows(rowNumber).Cells(1).offset(0, i).Value = "" Then
+                Set keyCell = ws.rows(rowNumber).Cells(1).offset(0, i)
                 Exit For
             End If
         Next i
@@ -73,7 +73,7 @@ Sub SetKeyValues(ByVal key As String, ByVal Values As Variant, Optional rowNumbe
     Next i
 End Sub
 
-Function GetRowValuesFromColumn(cell As Range, Optional StartColumn As Long = 4) As Variant
+Function GetRowValuesFromColumn(cell As range, Optional StartColumn As Long = 4) As Variant
     Dim RowValues() As Variant
     Dim i As Long
 
@@ -86,11 +86,11 @@ Function GetRowValuesFromColumn(cell As Range, Optional StartColumn As Long = 4)
     GetRowValuesFromColumn = RowValues
 End Function
 
-Function GetOffsetForYear(ByVal year As String) As Integer
-    Dim searchRange As Range
-    Dim foundCell As Range
+Function GetOffsetForYear(ByVal year As String, ByVal table As String) As Integer
+    Dim searchRange As range
+    Dim foundCell As range    
+    Set searchRange = range("_mappings_" & table & "!A2:A40")
 
-    Set searchRange = Range("_mappings!A2:A40")
     Set foundCell = searchRange.Find(year, LookIn:=xlValues, LookAt:=xlWhole)
 
     If Not foundCell Is Nothing Then
@@ -100,14 +100,14 @@ Function GetOffsetForYear(ByVal year As String) As Integer
     End If
 End Function
 
-Function GetHeadersForYear(ByVal year As String) As Variant
-    Dim searchRange As Range
-    Dim foundCell As Range
-    Dim ret As Range
-    Set searchRange = Range("_mappings!A2:A40")
+Function GetHeadersForYear(ByVal year As String, ByVal table As String) As Variant
+    Dim searchRange As range
+    Dim foundCell As range
+    Dim ret As range
+    
+    Set searchRange = range("_mappings_" & table & "!A2:A40")
+    
     Set foundCell = searchRange.Find(year, LookIn:=xlValues, LookAt:=xlWhole)
-
-    '=_mappings!E4:V4
     If Not foundCell Is Nothing Then
         GetHeadersForYear = GetRowValuesFromColumn(foundCell)
     Else
