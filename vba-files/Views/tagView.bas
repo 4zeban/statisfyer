@@ -18,7 +18,7 @@ Public Function BuildRow(ByVal table As String, ByVal pref As String, Optional y
     
     On Error Resume Next ' ignore errors if name doesn't exist
        
-    For i = 0 To 35
+    For i = 0 To 50
       If (key = "") Then
             yearValues(i) = range("T" & table & "_" & pref & "_" & year + i & "_Summa")
         Else
